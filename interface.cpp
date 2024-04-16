@@ -133,7 +133,7 @@ void PerformMatrixOperations() {
     do {
         cout << "\nMatrix Operations:\n";
         cout << "1. Inverse of a Matrix\n";
-        cout << "2. Addition and Subtraction of Matrices\n";
+        cout << "2. Addition of Matrices\n";
         cout << "3. Scalar Addition and Subtraction of a Matrix\n";
         cout << "4. Return to Main Menu\n";
         cout << "Enter your choice: ";
@@ -143,7 +143,28 @@ void PerformMatrixOperations() {
             case '1':
                 // Inverse of a Matrix
                 try {
-                    // Code to compute and print inverse of a matrix
+                    int rows, cols;
+                    cout << "Enter dimensions of the matrix (rows cols): ";
+                    cin >> rows >> cols;
+                    if (cin.fail() || rows <= 0 || cols <= 0) {
+                        throw invalid_argument("Invalid input for dimensions.");
+                    }
+                    cout << "Enter matrix elements:\n";
+                    double* data = new double[rows * cols];
+                    for (int i = 0; i < rows * cols; ++i) {
+                        cin >> data[i];
+                        if (cin.fail()) {
+                            delete[] data;
+                            throw invalid_argument("Invalid input for matrix element.");
+                        }
+                    }
+                    Matrix2<double> matrix(rows, cols, data);
+                    cout << "Original Matrix:\n";
+                    Print(matrix);
+                    Matrix2<double> inverseMatrix = matrix.inverse();
+                    cout << "Inverse of the Matrix:\n";
+                    Print(inverseMatrix);
+                    delete[] data;
                 } catch (const invalid_argument& e) {
                     cerr << "Error: " << e.what() << endl;
                     cin.clear();
@@ -151,9 +172,43 @@ void PerformMatrixOperations() {
                 }
                 break;
             case '2':
-                // Addition and Subtraction of Matrices
+                // Addition of Matrices
                 try {
-                    // Code to perform matrix addition and subtraction
+                    int rows, cols;
+                    cout << "Enter dimensions of matrices (rows cols): ";
+                    cin >> rows >> cols;
+                    if (cin.fail() || rows <= 0 || cols <= 0) {
+                        throw invalid_argument("Invalid input for dimensions.");
+                    }
+                    cout << "Enter the number of matrices to add (2 or 3): ";
+                    int numMatrices;
+                    cin >> numMatrices;
+                    if (cin.fail() || (numMatrices != 2 && numMatrices != 3)) {
+                        throw invalid_argument("Invalid input for the number of matrices.");
+                    }
+                    vector<Matrix2<double>> matrices;
+                    for (int i = 0; i < numMatrices; ++i) {
+                        cout << "Enter elements for matrix " << i + 1 << ":\n";
+                        double* data = new double[rows * cols];
+                        for (int j = 0; j < rows * cols; ++j) {
+                            cin >> data[j];
+                            if (cin.fail()) {
+                                delete[] data;
+                                throw invalid_argument("Invalid input for matrix element.");
+                            }
+                        }
+                        matrices.push_back(Matrix2<double>(rows, cols, data));
+                        delete[] data;
+                    }
+                    if (numMatrices == 2) {
+                        Matrix2<double> result = addMatrices(matrices[0], matrices[1]);
+                        cout << "Result of addition:\n";
+                        Print(result);
+                    } else {
+                        Matrix2<double> result = addMatrices(matrices[0], matrices[1], matrices[2]);
+                        cout << "Result of addition:\n";
+                        Print(result);
+                    }
                 } catch (const invalid_argument& e) {
                     cerr << "Error: " << e.what() << endl;
                     cin.clear();
@@ -161,15 +216,45 @@ void PerformMatrixOperations() {
                 }
                 break;
             case '3':
-                // Scalar Addition and Subtraction of a Matrix
                 try {
-                    // Code to perform scalar addition and subtraction of a matrix
+                    int rows, cols;
+                    cout << "Enter matrix dimensions (rows cols): ";
+                    cin >> rows >> cols;
+                    if (cin.fail() || rows <= 0 || cols <= 0) {
+                        throw invalid_argument("Invalid input for dimensions.");
+                    }
+                    cout << "Enter scalar value: ";
+                    double scalar;
+                    cin >> scalar;
+                    if (cin.fail()) {
+                        throw invalid_argument("Invalid input for scalar.");
+                    }
+                    cout << "Enter matrix elements:\n";
+                    double* data = new double[rows * cols];
+                    for (int i = 0; i < rows * cols; ++i) {
+                        cin >> data[i];
+                        if (cin.fail()) {
+                            delete[] data;
+                            throw invalid_argument("Invalid input for matrix element.");
+                        }
+                    }
+                    Matrix2<double> matrix(rows, cols, data);
+                    cout << "Original Matrix:\n";
+                    Print(matrix);
+                    Matrix2<double> result1 = matrix + scalar;
+                    cout << "Matrix after scalar addition:\n";
+                    Print(result1);
+                    Matrix2<double> result2 = matrix - scalar;
+                    cout << "Matrix after scalar subtraction:\n";
+                    Print(result2);
+                    delete[] data;
                 } catch (const invalid_argument& e) {
                     cerr << "Error: " << e.what() << endl;
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }
                 break;
+                
             case '4':
                 // Return to Main Menu
                 break;
@@ -179,6 +264,8 @@ void PerformMatrixOperations() {
     } while (choice != '4');
 }
 
+    
+// Function to perform vector operations
 // Function to perform vector operations
 void PerformVectorOperations() {
     char choice;
@@ -196,7 +283,42 @@ void PerformVectorOperations() {
             case '1':
                 // Addition of Vectors
                 try {
-                    // Code to perform vector addition
+                    int dims;
+                    cout << "Enter the number of dimensions: ";
+                    cin >> dims;
+                    if (cin.fail() || dims <= 0) {
+                        throw invalid_argument("Invalid input for the number of dimensions.");
+                    }
+
+                    cout << "Enter the number of vectors to add (2 or more): ";
+                    int numVectors;
+                    cin >> numVectors;
+                    if (cin.fail() || numVectors < 2) {
+                        throw invalid_argument("Invalid input for the number of vectors.");
+                    }
+
+                    vector<Vector<double>> vectors;
+                    for (int i = 0; i < numVectors; ++i) {
+                        cout << "Enter elements for vector " << i + 1 << ":\n";
+                        vector<double> vecData(dims);
+                        for (int j = 0; j < dims; ++j) {
+                            cin >> vecData[j];
+                            if (cin.fail()) {
+                                throw invalid_argument("Invalid input for vector element.");
+                            }
+                        }
+                        vectors.push_back(Vector<double>(vecData));
+                    }
+
+                    // Compute the result of vector addition
+                    Vector<double> result = vectors[0];
+                    for (int i = 1; i < numVectors; ++i) {
+                        result = result + vectors[i];
+                    }
+
+                    cout << "Result of vector addition:\n";
+                    Print(result);
+
                 } catch (const invalid_argument& e) {
                     cerr << "Error: " << e.what() << endl;
                     cin.clear();
@@ -206,17 +328,80 @@ void PerformVectorOperations() {
             case '2':
                 // Dot Product of Vectors
                 try {
-                    // Code to compute and print dot product of vectors
+                    int dims;
+                    cout << "Enter the number of dimensions: ";
+                    cin >> dims;
+                    if (cin.fail() || dims <= 0) {
+                        throw invalid_argument("Invalid input for the number of dimensions.");
+                    }
+
+                    cout << "Enter the number of vectors: ";
+                    int numVectors;
+                    cin >> numVectors;
+                    if (cin.fail() || numVectors <= 0) {
+                        throw invalid_argument("Invalid input for the number of vectors.");
+                    }
+
+                    vector<Vector<double>> vectors;
+                    for (int i = 0; i < numVectors; ++i) {
+                        cout << "Enter elements for vector " << i + 1 << ":\n";
+                        vector<double> vecData(dims);
+                        for (int j = 0; j < dims; ++j) {
+                            cin >> vecData[j];
+                            if (cin.fail()) {
+                                throw invalid_argument("Invalid input for vector element.");
+                            }
+                        }
+                        vectors.push_back(Vector<double>(vecData));
+                       
+                    }
+                    double result;
+                    if(numVectors==2)
+                        result = dot(vectors[0], vectors[1]); // Assuming at least two vectors are provided
+                    else
+                        result = dot(vectors[0], vectors[1], vectors[2]); 
+                    cout << "Dot product of vectors: " << result << endl;
+                    
                 } catch (const invalid_argument& e) {
                     cerr << "Error: " << e.what() << endl;
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }
                 break;
+                        
             case '3':
                 // Scalar Multiplication of a Vector
                 try {
-                    // Code to perform scalar multiplication of a vector
+                    int dims;
+                    cout << "Enter the number of dimensions: ";
+                    cin >> dims;
+                    if (cin.fail() || dims <= 0) {
+                        throw invalid_argument("Invalid input for the number of dimensions.");
+                    }
+
+                    cout << "Enter scalar value: ";
+                    double scalar;
+                    cin >> scalar;
+                    if (cin.fail()) {
+                        throw invalid_argument("Invalid input for scalar.");
+                    }
+
+                    cout << "Enter elements for the vector:\n";
+                    vector<double> vecData(dims);
+                    for (int i = 0; i < dims; ++i) {
+                        cin >> vecData[i];
+                        if (cin.fail()) {
+                            throw invalid_argument("Invalid input for vector element.");
+                        }
+                    }
+                    Vector<double> vec(vecData);
+
+                    // Compute the result of scalar multiplication
+                    Vector<double> result = vec * scalar;
+
+                    cout << "Result of scalar multiplication:\n";
+                    Print(result);
+
                 } catch (const invalid_argument& e) {
                     cerr << "Error: " << e.what() << endl;
                     cin.clear();
@@ -226,18 +411,38 @@ void PerformVectorOperations() {
             case '4':
                 // Cross Product of 3D Vectors
                 try {
-                    // Code to compute and print cross product of 3D vectors
+                    cout << "Enter elements for the first 3D vector:\n";
+                    vector<double> vecData1(3);
+                    for (int i = 0; i < 3; ++i) {
+                        cin >> vecData1[i];
+                        if (cin.fail()) {
+                            throw invalid_argument("Invalid input for vector element.");
+                        }
+                    }
+                    Vector<double> vec1(vecData1);
+
+                    cout << "Enter elements for the second 3D vector:\n";
+                    vector<double> vecData2(3);
+                    for (int i = 0; i < 3; ++i) {
+                        cin >> vecData2[i];
+                        if (cin.fail()) {
+                            throw invalid_argument("Invalid input for vector element.");
+                        }
+                    }
+                    Vector<double> vec2(vecData2);
+
+                    // Compute the cross product
+                    Vector<double> result = Vector<double>::cross(vec1, vec2);
+
+                    cout << "Result of cross product:\n";
+                    Print(result);
+
                 } catch (const invalid_argument& e) {
                     cerr << "Error: " << e.what() << endl;
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 }
                 break;
-            case '5':
-                // Return to Main Menu
-                break;
-            default:
-                cout << "Invalid choice! Please try again.\n";
         }
     } while (choice != '5');
 }
