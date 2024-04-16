@@ -1,11 +1,10 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-
 #include <stdexcept>
 #include <iostream>
 #include <iomanip>
-#include <vector> // Include the standard vector header
+#include <vector>
 #include <cmath>
 
 template <class T>
@@ -13,33 +12,33 @@ class Vector {
 public:
     // Constructors
     static_assert(std::is_arithmetic<T>::value, "Vector can only be instantiated with numeric types.");
-    Vector();
-    Vector(std::vector<T> inputData); // Use std::vector instead of MyVector
+    Vector(); // Default constructor
+    Vector(std::vector<T> inputData); // Constructor with vector data
+
     // Destructor
     ~Vector();
 
-    int GetNumDims() const;
     // Function to return number of dimensions
+    int GetNumDims() const;
 
-    // Function to handle elements of the vector
-
+    // Function to get element at index
     T GetElement(int index) const;
 
     // Overloaded operators
-    Vector<T> operator+ (const Vector<T>& rhs) const;
-    Vector<T> operator- (const Vector<T>& rhs) const;
-    Vector<T> operator* (const T& rhs) const;
+    Vector<T> operator+ (const Vector<T>& rhs) const; // Addition
+    Vector<T> operator- (const Vector<T>& rhs) const; // Subtraction
+    Vector<T> operator* (const T& rhs) const; // Scalar multiplication
 
-    // Friend function
+    // Friend function for scalar multiplication
     template <class U> friend Vector<U> operator* (const U &lhs, const Vector<U> &rhs);
 
     // Static functions
-    static T dot(const Vector<T> &a, const Vector<T> &b);
-    static Vector<T> cross(const Vector<T> &a, const Vector<T> &b);
+    static T dot(const Vector<T> &a, const Vector<T> &b); // Dot product
+    static Vector<T> cross(const Vector<T> &a, const Vector<T> &b); // Cross product
 
 private:
-    std::vector<T> m_vectorData; // Use std::vector instead of MyVector
-    int m_nDims;
+    std::vector<T> m_vectorData; // Vector data
+    int m_nDims; // Number of dimensions
 };
 
 // Constructors
@@ -55,26 +54,27 @@ Vector<T>::Vector(std::vector<T> inputData) {
     m_vectorData = inputData; // Directly assign the input std::vector
 }
 
+// Destructor
 template <class T>
 Vector<T>::~Vector() {
 }
 
-// Returning dimension
+// Function to return number of dimensions
 template <class T>
-int Vector<T>::GetNumDims() const{
+int Vector<T>::GetNumDims() const {
     return m_nDims;
 }
 
-// Element access
+// Function to get element at index
 template <class T>
-T Vector<T>::GetElement(int index) const{
+T Vector<T>::GetElement(int index) const {
     if (index < 0 || index >= m_nDims) {
         throw std::out_of_range("Index out of range");
     }
     return m_vectorData.at(index);
 }
 
-// Operator overloading
+// Operator overloading: Addition
 template <class T>
 Vector<T> Vector<T>::operator+(const Vector<T> &rhs) const {
     if (m_nDims != rhs.m_nDims)
@@ -88,6 +88,7 @@ Vector<T> Vector<T>::operator+(const Vector<T> &rhs) const {
     return result;
 }
 
+// Operator overloading: Subtraction
 template <class T>
 Vector<T> Vector<T>::operator-(const Vector<T> &rhs) const {
     if (m_nDims != rhs.m_nDims)
@@ -101,6 +102,7 @@ Vector<T> Vector<T>::operator-(const Vector<T> &rhs) const {
     return result;
 }
 
+// Operator overloading: Scalar multiplication
 template <class T>
 Vector<T> Vector<T>::operator*(const T &rhs) const {
     std::vector<T> resultData;
@@ -111,6 +113,7 @@ Vector<T> Vector<T>::operator*(const T &rhs) const {
     return result;
 }
 
+// Friend function for scalar multiplication
 template <class T>
 Vector<T> operator*(const T &lhs, const Vector<T> &rhs) {
     std::vector<T> resultData;
@@ -146,12 +149,13 @@ T dot(const Vector<T>& first, const Vector<T>& second) {
     return dot_helper(first, second);
 }
 
-// Static functions
+// Static function for dot product
 template <class T>
 T Vector<T>::dot(const Vector<T> &a, const Vector<T> &b) {
     return dot_helper(a, b);
 }
 
+// Static function for cross product
 template <class T>
 Vector<T> Vector<T>::cross(const Vector<T> &a, const Vector<T> &b) {
     if (a.m_nDims != b.m_nDims)
