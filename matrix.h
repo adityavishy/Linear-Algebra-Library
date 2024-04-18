@@ -206,6 +206,21 @@ Matrix2<T> operator+(const Matrix2<T>& lhs, const Matrix2<T>& rhs)
     return result;
 }
 
+// Specialization
+template <>
+Matrix2<int> operator+(const Matrix2<int>& lhs, const Matrix2<int>& rhs)
+{
+    int numRows = lhs.m_nRows;
+    int numCols = lhs.m_nCols;
+    int numElements = numRows * numCols;
+    int *tempResult = new int[numElements];
+    for (int i = 0; i < numElements; ++i)
+        tempResult[i] = lhs.m_matrixData[i] + rhs.m_matrixData[i];
+    Matrix2<int> result(numRows, numCols, tempResult);
+    delete[] tempResult;
+    return result;
+}
+
 // Scalar + Matrix
 template <class T>
 Matrix2<T> operator+(const T& lhs, const Matrix2<T>& rhs)
@@ -468,13 +483,13 @@ void Matrix2<T>::swapRows(int row1, int row2) {
 
 // Base case for adding matrices
 template <class T>
-Matrix2<T> addMatrices(const Matrix2<T>& matrix) {
+Matrix2<T> addMatrices(Matrix2<T>& matrix) {
     return matrix; // Base case: return the matrix itself
 }
 
 // Recursive case for adding matrices
 template <class T, class... Args>
-Matrix2<T> addMatrices(const Matrix2<T>& matrix, Args... args) {
+Matrix2<T> addMatrices(Matrix2<T>& matrix, Args... args) {
     return matrix + addMatrices(args...); // Recursive case: add the matrix to the result of adding the rest
 }
 

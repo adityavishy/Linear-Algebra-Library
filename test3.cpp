@@ -68,6 +68,17 @@ int main() {
     std::cout << "\nMatrix scalar subtraction result:" << std::endl;
     Print(scalarSubtractionResult);
 
+    // Test == operator
+    bool res = matrix==matrix2;
+    std::cout << "== operator " << res <<endl;
+    // Test Matrix multiplication
+    std::cout << "\nTesting Matrix multiplication...\n";
+    Matrix2<double> matrix3(2, 2, new double[4]{1, 2, 3, 4});
+    Matrix2<double> multiplicationResult = matrix * matrix3;
+
+    std::cout << "\nMatrix multiplication result:" << std::endl;
+    Print(multiplicationResult);
+
     // Test Vector operations
     std::cout << "\nTesting Vector operations...\n";
 
@@ -108,3 +119,4 @@ int main() {
 
     return 0;
 }
+

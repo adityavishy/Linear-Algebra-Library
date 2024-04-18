@@ -135,7 +135,8 @@ void PerformMatrixOperations() {
         cout << "1. Inverse of a Matrix\n";
         cout << "2. Addition of Matrices\n";
         cout << "3. Scalar Addition and Subtraction of a Matrix\n";
-        cout << "4. Return to Main Menu\n";
+        cout << "4. Multiplication of Matrices\n";
+        cout << "5. Return to Main Menu\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -256,12 +257,67 @@ void PerformMatrixOperations() {
                 break;
                 
             case '4':
-                // Return to Main Menu
+                            
+                // Matrix Multiplication
+                try {
+                    int rows1, cols1, rows2, cols2;
+                    cout << "Enter dimensions of the first matrix (rows cols): ";
+                    cin >> rows1 >> cols1;
+                    if (cin.fail() || rows1 <= 0 || cols1 <= 0) {
+                        throw invalid_argument("Invalid input for dimensions of the first matrix.");
+                    }
+
+                    cout << "Enter elements for the first matrix:\n";
+                    double* data1 = new double[rows1 * cols1];
+                    for (int i = 0; i < rows1 * cols1; ++i) {
+                        cin >> data1[i];
+                        if (cin.fail()) {
+                            delete[] data1;
+                            throw invalid_argument("Invalid input for matrix element.");
+                        }
+                    }
+                    Matrix2<double> matrix1(rows1, cols1, data1);
+
+                    cout << "Enter dimensions of the second matrix (rows cols): ";
+                    cin >> rows2 >> cols2;
+                    if (cin.fail() || rows2 <= 0 || cols2 <= 0 || cols1 != rows2) {
+                        delete[] data1;
+                        throw invalid_argument("Invalid input for dimensions of the second matrix or incompatible dimensions for multiplication.");
+                    }
+
+                    cout << "Enter elements for the second matrix:\n";
+                    double* data2 = new double[rows2 * cols2];
+                    for (int i = 0; i < rows2 * cols2; ++i) {
+                        cin >> data2[i];
+                        if (cin.fail()) {
+                            delete[] data1;
+                            delete[] data2;
+                            throw invalid_argument("Invalid input for matrix element.");
+                        }
+                    }
+                    Matrix2<double> matrix2(rows2, cols2, data2);
+
+                    cout << "First Matrix:\n";
+                    Print(matrix1);
+                    cout << "Second Matrix:\n";
+                    Print(matrix2);
+
+                    Matrix2<double> result = matrix1 * matrix2;
+                    cout << "Result of matrix multiplication:\n";
+                    Print(result);
+
+                    delete[] data1;
+                    delete[] data2;
+                } catch (const invalid_argument& e) {
+                    cerr << "Error: " << e.what() << endl;
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                }
                 break;
             default:
                 cout << "Invalid choice! Please try again.\n";
         }
-    } while (choice != '4');
+    } while (choice != '5');
 }
 
     
@@ -335,10 +391,10 @@ void PerformVectorOperations() {
                         throw invalid_argument("Invalid input for the number of dimensions.");
                     }
 
-                    cout << "Enter the number of vectors: ";
+                    cout << "Enter the number of vectors:(2 or 3) ";
                     int numVectors;
                     cin >> numVectors;
-                    if (cin.fail() || numVectors <= 0) {
+                    if (cin.fail() || numVectors < 2 || numVectors > 3) {
                         throw invalid_argument("Invalid input for the number of vectors.");
                     }
 

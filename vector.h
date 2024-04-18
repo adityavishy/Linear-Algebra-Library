@@ -112,7 +112,7 @@ Vector<T> Vector<T>::operator*(const T &rhs) const {
     Vector<T> result(resultData);
     return result;
 }
-
+ 
 // Friend function for scalar multiplication
 template <class T>
 Vector<T> operator*(const T &lhs, const Vector<T> &rhs) {
